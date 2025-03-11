@@ -53,12 +53,13 @@ const RouteMapping = () => {
 
     return (
         <View style={styles.container}>
+
             <MapView
                 style={styles.map}
                 initialRegion={{
-                    latitude: location?.latitude || 37.7749,
-                    longitude: location?.longitude || -122.4194,
-                    latitudeDelta: 0.01,
+                    latitude: 49.2827, // Vancouver latitude
+                    longitude: -123.1207, // Vancouver longitude
+                    latitudeDelta: 0.01, // Zoom level
                     longitudeDelta: 0.01,
                 }}
                 showsUserLocation={true}
@@ -71,6 +72,7 @@ const RouteMapping = () => {
                     </>
                 )}
             </MapView>
+
             <View style={styles.buttons}>
               <TouchableOpacity style={styles.button} onPress={startTracking} disabled={tracking}>
                   <Text style={styles.buttonText}>Start Tracking</Text>
@@ -85,27 +87,29 @@ const RouteMapping = () => {
 };
 
 const styles = StyleSheet.create({
-    container: { flex: 1 },
-    map: { flex: 1 },
-    buttons: {
-        position: 'absolute',
-        bottom: 20,
-        alignSelf: 'center',
-        flexDirection: 'row',
-        gap: 10,
-    },
-    button: {
+  container: { 
+    flex: 1,
+    justifyContent: 'flex-end', 
+    paddingTop: 40, 
+   },
+  map: { flex: 1 },
+  buttons: {
+      position: 'absolute',
+      bottom: 50, // Move the button closer to the bottom
+      alignSelf: 'center',
+      flexDirection: 'row',
+      gap: 10,
+  },
+  button: {
       backgroundColor: '#007AFF',
-      padding: 10,
-      borderRadius: 5,
-      margin: 5,
+      padding: 12,
+      borderRadius: 8,
       alignItems: 'center',
-    },
-    buttonText: {
-        color: 'white',
-        fontWeight: 'bold',
-    },
-    
+  },
+  buttonText: {
+      color: 'white',
+      fontWeight: 'bold',
+  },
 });
 
 export default RouteMapping;
