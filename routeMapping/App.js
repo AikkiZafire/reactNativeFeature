@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, Alert } from 'react-native';
 import MapView, { Marker, Polyline } from 'react-native-maps';
+import { TouchableOpacity, Text } from 'react-native';
 import * as Location from 'expo-location';
 
 const RouteMapping = () => {
@@ -12,27 +13,39 @@ const RouteMapping = () => {
         (async () => {
             let { status } = await Location.requestForegroundPermissionsAsync();
             if (status !== 'granted') {
-                Alert.alert('Permission Denied', 'Location permission is required to track your route.');
+                Alert.alert('Permission Denied', 'Location access is required for tracking.');
                 return;
             }
+    
+            // Get initial location
+            let currentLocation = await Location.getCurrentPositionAsync({});
+            setLocation({
+                latitude: currentLocation.coords.latitude,
+                longitude: currentLocation.coords.longitude,
+            });
         })();
     }, []);
 
+
     const startTracking = async () => {
         setTracking(true);
+    
+        // Start location tracking
         await Location.watchPositionAsync(
             {
                 accuracy: Location.Accuracy.High,
-                timeInterval: 2000, // Update location every 2 seconds
-                distanceInterval: 5, // Update if user moves 5 meters
+                timeInterval: 1000,  // Updates location every 1 second
+                distanceInterval: 3, // Updates when user moves 3 meters
             },
             (newLocation) => {
                 const { latitude, longitude } = newLocation.coords;
                 setLocation({ latitude, longitude });
+    
                 setRoute((prevRoute) => [...prevRoute, { latitude, longitude }]);
             }
         );
     };
+  
 
     const stopTracking = () => {
         setTracking(false);
@@ -59,8 +72,13 @@ const RouteMapping = () => {
                 )}
             </MapView>
             <View style={styles.buttons}>
-                <button onPress={startTracking} disabled={tracking}>Start Tracking</button>
-                <button onPress={stopTracking} disabled={!tracking}>Stop Tracking</button>
+              <TouchableOpacity style={styles.button} onPress={startTracking} disabled={tracking}>
+                  <Text style={styles.buttonText}>Start Tracking</Text>
+              </TouchableOpacity>
+              
+              <TouchableOpacity style={styles.button} onPress={stopTracking} disabled={!tracking}>
+                  <Text style={styles.buttonText}>Stop Tracking</Text>
+              </TouchableOpacity>
             </View>
         </View>
     );
@@ -76,6 +94,18 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         gap: 10,
     },
+    button: {
+      backgroundColor: '#007AFF',
+      padding: 10,
+      borderRadius: 5,
+      margin: 5,
+      alignItems: 'center',
+    },
+    buttonText: {
+        color: 'white',
+        fontWeight: 'bold',
+    },
+    
 });
 
 export default RouteMapping;
